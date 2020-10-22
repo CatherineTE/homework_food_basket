@@ -1,13 +1,40 @@
 package com.catherine_te.homework_food_basket;
 
+import java.util.Arrays;
+import java.util.Scanner;
+
 public class Main {
+
+    private static final int NUMBER_OF_PURCHASE = 5;
+
+    private static Scanner scanner = new Scanner(System.in);
+
     public static void main(String[] args) {
-        java.util.Scanner scanner = new java.util.Scanner(System.in);
 
-        Purchase[] purchases = new Purchase[5];     //массив для покупок
+        Purchase[] purchases = inputPurchases();
 
-        int j = 0;
-        for (int i = 0; i < 5; i++) {
+        //не очень понятно зачем отдельный массив
+        Purchase[] totalPurchases = Arrays.copyOf(purchases, NUMBER_OF_PURCHASE);     // массив итоговых покупок
+
+        double totalCost = getTotalCost(totalPurchases);
+
+        System.out.println("Общая стоимость покупки: " + totalCost);
+
+    }
+
+    private static double getTotalCost(Purchase[] totalPurchases) {
+        double totalCost = 0;
+        for (Purchase totalPurchase : totalPurchases) {
+            double cost = totalPurchase.getAmount() * totalPurchase.getProduct().getCost();
+            totalCost += cost;
+        }
+        return totalCost;
+    }
+
+    private static Purchase[] inputPurchases() {
+        Purchase[] purchases = new Purchase[NUMBER_OF_PURCHASE];     //массив для покупок
+
+        for (int i = 0; i < NUMBER_OF_PURCHASE; i++) {
             System.out.println("Введите наименование товара, цену и его количество:");
             String userInput = scanner.nextLine();     // ввод покупок из консоли
 
@@ -16,29 +43,19 @@ public class Main {
                 break;
             }
 
-            String[] userInputParts = userInput.split( " ");
+            String[] userInputParts = userInput.split(" ");
 
             String nameProduct = userInputParts[0];
             double cost = Double.parseDouble(userInputParts[1]);
             int amount = Integer.parseInt(userInputParts[2]);
 
-            System.out.println("Вы ввели покупку №" + (i+1) + " - наименование: " + nameProduct + ", цена: " + cost + ", количество: " + amount );
+            System.out.println("Вы ввели покупку №" + (i + 1) + " - наименование: " + nameProduct + ", цена: " + cost + ", количество: " + amount);
 
             Product product = new Product(nameProduct, cost);
             Purchase purchase = new Purchase(product, amount);
 
-            purchases [i] = purchase;
-            j++;
+            purchases[i] = purchase;
         }
-        Purchase[] totalPurchases = new Purchase[j];     // массив итоговых покупок
-        System.arraycopy(purchases, 0, totalPurchases, 0, totalPurchases.length);
-
-        double totalCost = 0;
-        for (int i = 0; i < totalPurchases.length; i++) {
-            double cost = totalPurchases[i].amount * totalPurchases[i].product.cost;
-            totalCost += cost;
-        }
-        System.out.println("Общая стоимость покупки: " + totalCost);
-
+        return purchases;
     }
 }
